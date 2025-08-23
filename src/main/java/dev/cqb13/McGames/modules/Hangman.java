@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
-import dev.cqb13.McGames.utils.HangmanUtils;
+import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import joptsimple.internal.Strings;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
@@ -47,6 +47,7 @@ public class Hangman extends Module {
     super(McGames.CATEGORY, "hangman", "Guess letters to reveal the word.");
   }
 
+  private static final String WORD_LIST_URL = "https://raw.githubusercontent.com/cqb13/mc-games/refs/heads/data/words.txt";
   private String[] wordList;
   private int minWordLen;
   private int maxWordLen;
@@ -60,7 +61,7 @@ public class Hangman extends Module {
   @Override
   public void onActivate() {
     try {
-      wordList = HangmanUtils.fetchWordList();
+      wordList = GameUtils.fetchWordList(WORD_LIST_URL);
     } catch (Exception e) {
       error(e.getMessage());
       toggle();
@@ -103,7 +104,7 @@ public class Hangman extends Module {
       }
     }
 
-    hiddenWord = HangmanUtils.pickWord(wordList, minWordLen, maxWordLen);
+    hiddenWord = GameUtils.pickWordFromList(wordList, minWordLen, maxWordLen);
     guessState = "_".repeat(hiddenWord.length());
   }
 

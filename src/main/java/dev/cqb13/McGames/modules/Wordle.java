@@ -24,6 +24,7 @@ public class Wordle extends Module {
     super(McGames.CATEGORY, "wordle", "Play Wordle forever.");
   }
 
+  private static final String WORD_LIST_URL = "https://raw.githubusercontent.com/cqb13/mc-games/refs/heads/data/wordle-words.txt";
   private String[] wordList;
   private String hiddenWord;
   private int lives;
