@@ -9,6 +9,7 @@ Play some games while your traveling, getting started in a new world, or just bo
 | Feature | Description                      |
 | ------- | -------------------------------- |
 | Hangman | Guess letters to reveal the word |
+| Wordle  | Play Wordle forever              |
 
 ## TODO
 
@@ -34,5 +35,3 @@ Play some games while your traveling, getting started in a new world, or just bo
   - Have 2 stacks of cobble stone
 - Navigator
   - Get to a destination (tracks time)
-
-Save high scores and stats for games
