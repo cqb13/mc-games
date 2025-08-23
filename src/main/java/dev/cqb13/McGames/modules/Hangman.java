@@ -8,6 +8,7 @@ import dev.cqb13.McGames.utils.HangmanUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import joptsimple.internal.Strings;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
+import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
@@ -173,6 +174,13 @@ public class Hangman extends Module {
     guessedLetters.addLast(event.message.toLowerCase());
 
     sendCurrentStateMsg();
+  }
+
+  @EventHandler
+  private void onMessageReceive(ReceiveMessageEvent event) {
+    if (!hideChatMessages.get())
+      return;
+    event.cancel();
   }
 
   @EventHandler
