@@ -6,7 +6,11 @@ Play some games while your traveling, getting started in a new world, or just bo
 
 ## Features
 
-## TODO:
+| Feature | Description                      |
+| ------- | -------------------------------- |
+| Hangman | Guess letters to reveal the word |
+
+## TODO
 
 ### Chat
 
@@ -19,15 +23,17 @@ Play some games while your traveling, getting started in a new world, or just bo
 **Less time = More Points**
 
 - Scavenger Hunt
-    - Difficulty Modes
-    - Dimension Mode
-    - Collect X types of items
-    - Collect X amount of each type
+  - Difficulty Modes
+  - Dimension Mode
+  - Collect X types of items
+  - Collect X amount of each type
 - Getting Started
-    - Equip a full suit of diamond armor
-    - Have a diamond sword, pic, and axe
-    - Have a stack of smelted iron & a stack of diamonds
-    - Have a stack of any food
-    - Have 2 stacks of cobble stone
+  - Equip a full suit of diamond armor
+  - Have a diamond sword, pic, and axe
+  - Have a stack of smelted iron & a stack of diamonds
+  - Have a stack of any food
+  - Have 2 stacks of cobble stone
 - Navigator
-    - Get to a destination (tracks time)
+  - Get to a destination (tracks time)
+
+Save high scores and stats for games

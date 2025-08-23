@@ -1,49 +1,41 @@
 package dev.cqb13.McGames;
 
-import dev.cqb13.McGames.commands.CommandExample;
-import dev.cqb13.McGames.hud.HudExample;
-import dev.cqb13.McGames.modules.ModuleExample;
+import dev.cqb13.McGames.modules.*;
 import com.mojang.logging.LogUtils;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
-import meteordevelopment.meteorclient.commands.Commands;
-import meteordevelopment.meteorclient.systems.hud.Hud;
-import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
 import org.slf4j.Logger;
 
 public class McGames extends MeteorAddon {
-    public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("Example");
-    public static final HudGroup HUD_GROUP = new HudGroup("Example");
+  public static final Logger LOG = LogUtils.getLogger();
+  public static final Category CATEGORY = new Category("MC games");
 
-    @Override
-    public void onInitialize() {
-        LOG.info("Initializing Meteor Addon Template");
+  @Override
+  public void onInitialize() {
+    LOG.info("Initializing MC Games...");
 
-        // Modules
-        Modules.get().add(new ModuleExample());
+    // Modules
+    LOG.info("Adding modules...");
+    Modules modules = Modules.get();
+    modules.add(new Hangman());
 
-        // Commands
-        Commands.add(new CommandExample());
+    LOG.info("Initialized MC Games.");
+  }
 
-        // HUD
-        Hud.get().register(HudExample.INFO);
-    }
+  @Override
+  public void onRegisterCategories() {
+    Modules.registerCategory(CATEGORY);
+  }
 
-    @Override
-    public void onRegisterCategories() {
-        Modules.registerCategory(CATEGORY);
-    }
+  @Override
+  public String getPackage() {
+    return "dev.cqb13.McGames";
+  }
 
-    @Override
-    public String getPackage() {
-        return "dev.cqb13.McGames";
-    }
-
-    @Override
-    public GithubRepo getRepo() {
-        return new GithubRepo("cqb13", "mc-games");
-    }
+  @Override
+  public GithubRepo getRepo() {
+    return new GithubRepo("cqb13", "mc-games");
+  }
 }
