@@ -14,6 +14,9 @@ import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class Hangman extends Module {
   private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -22,13 +25,14 @@ public class Hangman extends Module {
       .name("difficulty")
       .description("Affects word length and guess attempts.")
       .defaultValue(Difficulty.Normal)
-      .onChanged(d -> difficultySwitch())
+      .onChanged(d -> optionSwitch())
       .build());
 
   private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
       .name("mode")
       .description("Single Round: one game, Survival: play until you die, Infinite: play forever.")
       .defaultValue(Mode.SingleRound)
+      .onChanged(m -> optionSwitch())
       .build());
 
   private final Setting<Boolean> hideChatMessages = sgGeneral.add(new BoolSetting.Builder()
@@ -45,9 +49,11 @@ public class Hangman extends Module {
   private int minWordLen;
   private int maxWordLen;
   private String hiddenWord;
+  private String guessState;
   private int lives;
   private ArrayList<String> guessedLetters;
   private int wordsGuessed;
+  private int round;
 
   @Override
   public void onActivate() {
@@ -61,10 +67,12 @@ public class Hangman extends Module {
 
     setup();
     McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Hangman is active.");
+    McGamesChatUtils.sendGameMsg(title, "Enter `!help` for more details.");
     sendStartGameMsg();
+    sendCurrentState();
   }
 
-  public void difficultySwitch() {
+  public void optionSwitch() {
     if (wordList == null) {
       return;
     }
@@ -92,6 +100,7 @@ public class Hangman extends Module {
     }
 
     hiddenWord = HangmanUtils.pickWord(wordList, minWordLen, maxWordLen);
+    guessState = "_".repeat(hiddenWord.length());
     info(hiddenWord);
   }
 
@@ -107,10 +116,42 @@ public class Hangman extends Module {
   }
 
   private void sendStartGameMsg() {
+    MutableText message = Text.empty();
+    message.append("\nDifficulty: ");
+    MutableText difficultyText = Text.empty();
+    switch (difficulty.get()) {
+      case Difficulty.Easy:
+        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.BLUE));
+        difficultyText.append("EASY\n");
+        break;
+      case Difficulty.Normal:
+        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.GREEN));
+        difficultyText.append("NORMAL\n");
+        break;
+      case Difficulty.Hard:
+        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.RED));
+        difficultyText.append("HARD\n");
+        break;
 
+    }
+    message.append(difficultyText);
+    message.append("Lives: " + lives + "\n");
+    if (mode.get() == Mode.Survival || mode.get() == Mode.Infinite) {
+      message.append("Round: " + round + "\n");
+    }
+    if (mode.get() == Mode.Infinite) {
+      message.append("Correct Words: " + wordsGuessed + "\n");
+    }
+    message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
+
+    McGamesChatUtils.sendGameMsg(false, title, message);
   }
 
-  private void sendCurrentState() {
+  private void sendCurrentStateMsg() {
+    MutableText message = Text.empty();
+    message.append("Lives: " + lives + "\n");
+    message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
+    McGamesChatUtils.sendGameMsg(false, title, message);
   }
 
   enum Mode {
