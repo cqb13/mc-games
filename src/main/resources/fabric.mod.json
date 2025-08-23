@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "mc-games",
+  "version": "${version}",
+  "name": "MC Games",
+  "description": "Play some games while your traveling, getting started in a new world, or just bored.",
+  "authors": ["cqb13"],
+  "contact": {
+    "sources": "https://github.com/cqb13/mc-games"
+  },
+  "icon": "assets/template/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "meteor": ["dev.cqb13.McGames.McGames"]
+  },
+  "mixins": ["mc-games.mixins.json"],
+  "custom": {
+    "meteor-client:color": "225,25,25"
+  },
+  "depends": {
+    "java": ">=21",
+    "minecraft": ["${mc_version}", "1.21.7", "1.21.6"],
+    "meteor-client": "*"
+  }
+}

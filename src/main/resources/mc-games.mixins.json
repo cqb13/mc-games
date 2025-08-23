@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "dev.cqb13.McGames.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "client": ["ExampleMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
