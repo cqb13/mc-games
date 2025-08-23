@@ -6,6 +6,7 @@ import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
 import dev.cqb13.McGames.utils.HangmanUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
+import joptsimple.internal.Strings;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
@@ -51,9 +52,9 @@ public class Hangman extends Module {
   private String hiddenWord;
   private String guessState;
   private int lives;
-  private ArrayList<String> guessedLetters;
-  private int wordsGuessed;
-  private int round;
+  private ArrayList<String> guessedLetters = new ArrayList<>();
+  private int wordsGuessed = 0;
+  private int round = 0;
 
   @Override
   public void onActivate() {
@@ -65,49 +66,113 @@ public class Hangman extends Module {
       return;
     }
 
-    setup();
+    setup(true);
     McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Hangman is active.");
-    McGamesChatUtils.sendGameMsg(title, "Enter `!help` for more details.");
+    McGamesChatUtils.sendGameMsg(title, "Enter `!used` to see used letters.");
     sendStartGameMsg();
-    sendCurrentState();
   }
 
   public void optionSwitch() {
     if (wordList == null) {
       return;
     }
-    setup();
+    setup(true);
     sendStartGameMsg();
   }
 
-  private void setup() {
-    switch (difficulty.get()) {
-      case Difficulty.Easy:
-        lives = 10;
-        minWordLen = 3;
-        maxWordLen = 6;
-        break;
-      case Difficulty.Normal:
-        lives = 8;
-        minWordLen = 4;
-        maxWordLen = 10;
-        break;
-      case Difficulty.Hard:
-        lives = 5;
-        minWordLen = 6;
-        maxWordLen = 18;
-        break;
+  private void setup(boolean resetLives) {
+    guessedLetters = new ArrayList<>();
+    if (resetLives) {
+      switch (difficulty.get()) {
+        case Difficulty.Easy:
+          lives = 10;
+          minWordLen = 3;
+          maxWordLen = 6;
+          break;
+        case Difficulty.Normal:
+          lives = 8;
+          minWordLen = 4;
+          maxWordLen = 10;
+          break;
+        case Difficulty.Hard:
+          lives = 5;
+          minWordLen = 6;
+          maxWordLen = 18;
+          break;
+      }
     }
 
     hiddenWord = HangmanUtils.pickWord(wordList, minWordLen, maxWordLen);
     guessState = "_".repeat(hiddenWord.length());
-    info(hiddenWord);
   }
 
   @EventHandler
   private void onSendMessage(SendMessageEvent event) {
-    info(event.message);
+    mc.inGameHud.getChatHud().clear(false);
     event.cancel();
+    if (event.message.equals("!used")) {
+      sendUsedLettersMsg();
+      sendCurrentStateMsg();
+      return;
+    }
+
+    if (event.message.length() > 1) {
+      McGamesChatUtils.sendGameMsg(title, "Please guess 1 letter at a time.");
+      sendCurrentStateMsg();
+      return;
+    }
+
+    if (guessedLetters.contains(event.message.toLowerCase())) {
+      McGamesChatUtils.sendGameMsg(title, "You have already guessed this letter.");
+      sendUsedLettersMsg();
+      sendCurrentStateMsg();
+      return;
+    }
+
+    if (hiddenWord.contains(event.message.toLowerCase())) {
+      StringBuilder temp = new StringBuilder(guessState);
+      for (int i = 0; i < hiddenWord.length(); i++) {
+        if (hiddenWord.charAt(i) == event.message.charAt(0)) {
+          temp.setCharAt(i, event.message.charAt(0));
+        }
+      }
+      guessState = temp.toString().toLowerCase();
+
+      if (guessState.equals(hiddenWord)) {
+        round += 1;
+        wordsGuessed += 1;
+
+        McGamesChatUtils.sendGameMsg(title, "You Guessed the Word, " + hiddenWord + "!");
+
+        if (mode.get() == Mode.SingleRound) {
+          toggle();
+          return;
+        }
+
+        setup(mode.get() == Mode.Infinite);
+        sendStartGameMsg();
+        return;
+      }
+    } else {
+      lives -= 1;
+      if (lives == 0) {
+        McGamesChatUtils.sendGameMsg(title, "You Lost! the word was " + hiddenWord + ".");
+        if (mode.get() == Mode.Survival && round > 0) {
+          McGamesChatUtils.sendGameMsg(title, "You survived for " + round + "rounds");
+        }
+        if (mode.get() == Mode.SingleRound || mode.get() == Mode.Survival) {
+          toggle();
+          return;
+        }
+        setup(true);
+        sendStartGameMsg();
+        return;
+      }
+    }
+
+    guessedLetters.addLast(event.message.toLowerCase());
+
+    sendCurrentStateMsg();
   }
 
   @EventHandler
@@ -152,6 +217,12 @@ public class Hangman extends Module {
     message.append("Lives: " + lives + "\n");
     message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
     McGamesChatUtils.sendGameMsg(false, title, message);
+  }
+
+  public void sendUsedLettersMsg() {
+    String usedLetters = "Used Letters: ";
+    usedLetters += Strings.join(guessedLetters, ", ");
+    McGamesChatUtils.sendGameMsg(false, title, Text.of(usedLetters));
   }
 
   enum Mode {
