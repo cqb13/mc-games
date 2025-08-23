@@ -4,6 +4,7 @@
 build/
 out/
 classes/
+.factorypath
 
 # eclipse
 
@@ -15,6 +16,7 @@ classes/
 *.iml
 *.ipr
 *.iws
+.editorconfig
 
 # vscode
 
