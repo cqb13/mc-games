@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
+import dev.cqb13.McGames.enums.GameMode;
 import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import joptsimple.internal.Strings;
@@ -18,7 +19,6 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 public class Hangman extends Module {
   private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -30,10 +30,10 @@ public class Hangman extends Module {
       .onChanged(d -> optionSwitch())
       .build());
 
-  private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
+  private final Setting<GameMode> mode = sgGeneral.add(new EnumSetting.Builder<GameMode>()
       .name("mode")
       .description("Single Round: one game, Survival: play until you die, Infinite: play forever.")
-      .defaultValue(Mode.SingleRound)
+      .defaultValue(GameMode.SingleRound)
       .onChanged(m -> optionSwitch())
       .build());
 
@@ -146,12 +146,12 @@ public class Hangman extends Module {
 
         McGamesChatUtils.sendGameMsg(title, "You Guessed the Word, " + hiddenWord + "!");
 
-        if (mode.get() == Mode.SingleRound) {
+        if (mode.get() == GameMode.SingleRound) {
           toggle();
           return;
         }
 
-        setup(mode.get() == Mode.Infinite);
+        setup(mode.get() == GameMode.Infinite);
         sendStartGameMsg();
         return;
       }
@@ -159,10 +159,10 @@ public class Hangman extends Module {
       lives -= 1;
       if (lives == 0) {
         McGamesChatUtils.sendGameMsg(title, "You Lost! the word was " + hiddenWord + ".");
-        if (mode.get() == Mode.Survival && round > 0) {
+        if (mode.get() == GameMode.Survival && round > 0) {
           McGamesChatUtils.sendGameMsg(title, "You survived for " + round + "rounds");
         }
-        if (mode.get() == Mode.SingleRound || mode.get() == Mode.Survival) {
+        if (mode.get() == GameMode.SingleRound || mode.get() == GameMode.Survival) {
           toggle();
           return;
         }
@@ -194,28 +194,12 @@ public class Hangman extends Module {
     MutableText message = Text.empty();
     message.append("\n\n");
     message.append("Difficulty: ");
-    MutableText difficultyText = Text.empty();
-    switch (difficulty.get()) {
-      case Difficulty.Easy:
-        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.BLUE));
-        difficultyText.append("EASY\n");
-        break;
-      case Difficulty.Normal:
-        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.GREEN));
-        difficultyText.append("NORMAL\n");
-        break;
-      case Difficulty.Hard:
-        difficultyText.setStyle(difficultyText.getStyle().withBold(true).withFormatting(Formatting.RED));
-        difficultyText.append("HARD\n");
-        break;
-
-    }
-    message.append(difficultyText);
+    message.append(difficulty.get().getStyledDifficulty() + "\n");
     message.append("Lives: " + lives + "\n");
-    if (mode.get() == Mode.Survival || mode.get() == Mode.Infinite) {
+    if (mode.get() == GameMode.Survival || mode.get() == GameMode.Infinite) {
       message.append("Round: " + round + "\n");
     }
-    if (mode.get() == Mode.Infinite) {
+    if (mode.get() == GameMode.Infinite) {
       message.append("Correct Words: " + wordsGuessed + "\n");
     }
     message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
@@ -235,11 +219,5 @@ public class Hangman extends Module {
     String usedLetters = "Used Letters: ";
     usedLetters += Strings.join(guessedLetters, ", ");
     McGamesChatUtils.sendGameMsg(title, Text.of(usedLetters));
-  }
-
-  enum Mode {
-    SingleRound,
-    Survival,
-    Infinite,
   }
 }

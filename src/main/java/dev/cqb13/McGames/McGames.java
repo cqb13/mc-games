@@ -21,6 +21,7 @@ public class McGames extends MeteorAddon {
     Modules modules = Modules.get();
     modules.add(new Hangman());
     modules.add(new Wordle());
+    modules.add(new TicTacToe());
 
     LOG.info("Initialized MC Games.");
   }
