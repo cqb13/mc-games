@@ -57,9 +57,9 @@ public class Wordle extends Module {
     hiddenWord = GameUtils.pickWordFromList(wordList, 5, 5);
 
     currentRow = 0;
-    for (int i = 0; i < gameState.length; i++) {
-      for (int j = 0; j < gameState[i].length; j++) {
-        gameState[i][j] = new WordleBox(' ', WordleBoxState.Empty);
+    for (int y = 0; y < gameState.length; y++) {
+      for (int x = 0; x < gameState[y].length; x++) {
+        gameState[y][x] = new WordleBox(' ', WordleBoxState.Empty);
       }
     }
   }

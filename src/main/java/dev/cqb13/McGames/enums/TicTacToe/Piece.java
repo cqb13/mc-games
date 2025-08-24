@@ -2,7 +2,7 @@ package dev.cqb13.McGames.enums.TicTacToe;
 
 public enum Piece {
   X("X"),
-  O("O"),
+  O("0"),
   Empty(" ");
 
   private final String value;

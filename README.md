@@ -16,14 +16,10 @@ Play some games while your traveling, getting started in a new world, or just bo
 | Feature     | Description                      |
 | ----------- | -------------------------------- |
 | Hangman     | Guess letters to reveal the word |
-| Wordle      | Play Wordle forever              |
 | Tic-Tac-Toe | Play Tic-Tac-Toe                 |
+| Wordle      | Play Wordle forever              |
 
 ## TODO
-
-### Chat
-
-- Tic-Tac-Toe
 
 ### World
 

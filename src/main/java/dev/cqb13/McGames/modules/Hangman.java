@@ -194,7 +194,8 @@ public class Hangman extends Module {
     MutableText message = Text.empty();
     message.append("\n\n");
     message.append("Difficulty: ");
-    message.append(difficulty.get().getStyledDifficulty() + "\n");
+    message.append(difficulty.get().getStyledDifficulty());
+    message.append("\n");
     message.append("Lives: " + lives + "\n");
     if (mode.get() == GameMode.Survival || mode.get() == GameMode.Infinite) {
       message.append("Round: " + round + "\n");
