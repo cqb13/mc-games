@@ -5,6 +5,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
+
 public class GameUtils {
   public static String[] fetchWordList(String url) throws McGamesException {
     HttpClient client = HttpClient.newHttpClient();
@@ -38,5 +40,9 @@ public class GameUtils {
     }
 
     return word;
+  }
+
+  public static boolean mcGamesMessage(ReceiveMessageEvent event, String title) {
+    return event.getMessage().getString().startsWith(String.format("[MC Games] [%s]", title));
   }
 }

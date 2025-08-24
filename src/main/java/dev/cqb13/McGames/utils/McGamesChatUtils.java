@@ -10,30 +10,24 @@ import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class McGamesChatUtils {
   public static void sendGameMsg(String gameName, String message) {
-    sendMsg(true, gameName, Text.of(message));
+    sendMsg(gameName, Text.of(message));
   }
 
   public static void sendGameMsg(String gameName, Text message) {
-    sendMsg(true, gameName, message);
+    sendMsg(gameName, message);
   }
 
-  public static void sendGameMsg(boolean includePrefix, String gameName, Text message) {
-    sendMsg(includePrefix, gameName, message);
-  }
-
-  private static void sendMsg(boolean includePrefix, String gameName, Text message) {
+  private static void sendMsg(String gameName, Text message) {
     if (mc.world == null)
       return;
     MutableText text = Text.empty();
 
-    if (includePrefix) {
-      MutableText prefix = Text.empty();
-      prefix.append(createPrefix("MC Games", Formatting.GOLD));
-      prefix.append(" ");
-      prefix.append(createPrefix(Utils.nameToTitle(gameName), Formatting.GOLD));
-      prefix.append(" ");
-      text.append(prefix);
-    }
+    MutableText prefix = Text.empty();
+    prefix.append(createPrefix("MC Games", Formatting.GOLD));
+    prefix.append(" ");
+    prefix.append(createPrefix(Utils.nameToTitle(gameName), Formatting.GOLD));
+    prefix.append(" ");
+    text.append(prefix);
 
     text.append(message);
 

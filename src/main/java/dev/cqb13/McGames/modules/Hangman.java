@@ -179,8 +179,9 @@ public class Hangman extends Module {
 
   @EventHandler
   private void onMessageReceive(ReceiveMessageEvent event) {
-    if (!hideChatMessages.get())
+    if (!hideChatMessages.get() || GameUtils.mcGamesMessage(event, title)) {
       return;
+    }
     event.cancel();
   }
 
@@ -191,7 +192,8 @@ public class Hangman extends Module {
 
   private void sendStartGameMsg() {
     MutableText message = Text.empty();
-    message.append("\nDifficulty: ");
+    message.append("\n\n");
+    message.append("Difficulty: ");
     MutableText difficultyText = Text.empty();
     switch (difficulty.get()) {
       case Difficulty.Easy:
@@ -218,20 +220,21 @@ public class Hangman extends Module {
     }
     message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
 
-    McGamesChatUtils.sendGameMsg(false, title, message);
+    McGamesChatUtils.sendGameMsg(title, message);
   }
 
   private void sendCurrentStateMsg() {
     MutableText message = Text.empty();
+    message.append("\n\n");
     message.append("Lives: " + lives + "\n");
     message.append("\n" + guessState + " (" + hiddenWord.length() + ")" + "\n");
-    McGamesChatUtils.sendGameMsg(false, title, message);
+    McGamesChatUtils.sendGameMsg(title, message);
   }
 
   public void sendUsedLettersMsg() {
     String usedLetters = "Used Letters: ";
     usedLetters += Strings.join(guessedLetters, ", ");
-    McGamesChatUtils.sendGameMsg(false, title, Text.of(usedLetters));
+    McGamesChatUtils.sendGameMsg(title, Text.of(usedLetters));
   }
 
   enum Mode {

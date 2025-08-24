@@ -22,7 +22,6 @@ Play some games while your traveling, getting started in a new world, or just bo
 
 ### Chat
 
-- Wordle
 - Tic-Tac-Toe
 
 ### World

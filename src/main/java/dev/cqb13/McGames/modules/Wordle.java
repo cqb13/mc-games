@@ -37,8 +37,6 @@ public class Wordle extends Module {
   private WordleBox[][] gameState = new WordleBox[6][5];
   private String hiddenWord;
   private int currentRow;
-  private int wins;
-  private int losses;
 
   @Override
   public void onActivate() {
@@ -51,7 +49,6 @@ public class Wordle extends Module {
     }
 
     setup();
-    System.out.println("here");
     McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Wordle is active.");
     sendGameStateMsg();
   }
@@ -70,6 +67,7 @@ public class Wordle extends Module {
   @EventHandler
   private void onSendMessage(SendMessageEvent event) {
     mc.inGameHud.getChatHud().clear(false);
+    event.cancel();
     if (event.message.length() != 5) {
       McGamesChatUtils.sendGameMsg(title, "Please enter a 5 letter word.");
       sendGameStateMsg();
@@ -78,7 +76,7 @@ public class Wordle extends Module {
 
     boolean found = false;
     for (String word : wordList) {
-      if (word == event.message.toLowerCase()) {
+      if (word.equals(event.message.toLowerCase())) {
         found = true;
         break;
       }
@@ -92,22 +90,30 @@ public class Wordle extends Module {
 
     updateGameState(event.message.toLowerCase());
 
-    if (hiddenWord == event.message.toLowerCase()) {
+    if (hiddenWord.equals(event.message.toLowerCase())) {
       sendGameStateMsg();
-      // TODO: win condition
+      McGamesChatUtils.sendGameMsg(title, "You got it!");
       setup();
       sendGameStateMsg();
       return;
     }
 
+    sendGameStateMsg();
+
     currentRow += 1;
+    if (currentRow > 5) {
+      McGamesChatUtils.sendGameMsg(title, "Not quite, the word was " + hiddenWord + ".");
+      setup();
+      sendGameStateMsg();
+      return;
+    }
   }
 
   private void updateGameState(String guess) {
     String[] guessLetters = guess.split("");
     String[] hiddenWordLettersCopy = hiddenWord.split("");
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       if (guessLetters[i].equals(hiddenWordLettersCopy[i])) {
         gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Correct);
         guessLetters[i] = "-";
@@ -115,7 +121,7 @@ public class Wordle extends Module {
       }
     }
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       if (gameState[currentRow][i].state() == WordleBoxState.Correct) {
         continue;
       }
@@ -123,7 +129,7 @@ public class Wordle extends Module {
       String letter = guessLetters[i];
       boolean found = false;
 
-      for (int j = 0; j < 6; j++) {
+      for (int j = 0; j < 5; j++) {
         if (letter.equals(hiddenWordLettersCopy[j])) {
           found = true;
           hiddenWordLettersCopy[j] = "*";
@@ -141,7 +147,7 @@ public class Wordle extends Module {
 
   private void sendGameStateMsg() {
     MutableText message = Text.empty();
-    message.append("\n");
+    message.append("\n\n");
     for (WordleBox[] row : gameState) {
       MutableText rowText = Text.empty();
       rowText.append("|");
@@ -152,7 +158,7 @@ public class Wordle extends Module {
       rowText.append("|\n");
       message.append(rowText);
     }
-    McGamesChatUtils.sendGameMsg(false, title, message);
+    McGamesChatUtils.sendGameMsg(title, message);
   }
 
   private Text styleLetter(WordleBox box) {
@@ -178,8 +184,9 @@ public class Wordle extends Module {
 
   @EventHandler
   private void onMessageReceive(ReceiveMessageEvent event) {
-    if (!hideChatMessages.get())
+    if (!hideChatMessages.get() || GameUtils.mcGamesMessage(event, title)) {
       return;
+    }
     event.cancel();
   }
 
