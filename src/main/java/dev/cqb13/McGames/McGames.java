@@ -20,6 +20,7 @@ public class McGames extends MeteorAddon {
     LOG.info("Adding modules...");
     Modules modules = Modules.get();
     modules.add(new Hangman());
+    modules.add(new Navigator());
     modules.add(new Wordle());
     modules.add(new TicTacToe());
 
