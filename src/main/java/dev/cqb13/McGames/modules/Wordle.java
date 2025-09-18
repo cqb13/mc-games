@@ -1,6 +1,7 @@
 package dev.cqb13.McGames.modules;
 
 import dev.cqb13.McGames.McGames;
+import dev.cqb13.McGames.enums.GameMode;
 import dev.cqb13.McGames.enums.WordleBoxState;
 import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
@@ -8,6 +9,7 @@ import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.game.ReceiveMessageEvent;
 import meteordevelopment.meteorclient.events.game.SendMessageEvent;
 import meteordevelopment.meteorclient.settings.BoolSetting;
+import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
@@ -28,6 +30,13 @@ public class Wordle extends Module {
       .defaultValue(true)
       .build());
 
+  private final Setting<GameMode> mode = sgGeneral.add(new EnumSetting.Builder<GameMode>()
+      .name("mode")
+      .description("Single Round: one game, Survival: play until you die, Infinite: play forever.")
+      .defaultValue(GameMode.SingleRound)
+      .onChanged(m -> optionSwitch())
+      .build());
+
   public Wordle() {
     super(McGames.CATEGORY, "wordle", "Play Wordle forever.");
   }
@@ -37,6 +46,7 @@ public class Wordle extends Module {
   private WordleBox[][] gameState = new WordleBox[6][5];
   private String hiddenWord;
   private int currentRow;
+  private int roundsPlayed;
 
   @Override
   public void onActivate() {
@@ -51,6 +61,10 @@ public class Wordle extends Module {
     setup();
     McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Wordle is active.");
     sendGameStateMsg();
+  }
+
+  private void optionSwitch() {
+    roundsPlayed = 0;
   }
 
   private void setup() {
@@ -93,6 +107,11 @@ public class Wordle extends Module {
     if (hiddenWord.equals(event.message.toLowerCase())) {
       sendGameStateMsg();
       McGamesChatUtils.sendGameMsg(title, "You got it!");
+      if (mode.get() == GameMode.SingleRound) {
+        toggle();
+        return;
+      }
+      roundsPlayed += 1;
       setup();
       sendGameStateMsg();
       return;
@@ -103,6 +122,13 @@ public class Wordle extends Module {
     currentRow += 1;
     if (currentRow > 5) {
       McGamesChatUtils.sendGameMsg(title, "Not quite, the word was " + hiddenWord + ".");
+      if (mode.get() == GameMode.SingleRound || mode.get() == GameMode.Survival) {
+        if (mode.get() == GameMode.Survival) {
+          McGamesChatUtils.sendGameMsg(title, "You survived for " + roundsPlayed + " rounds.");
+        }
+        toggle();
+        return;
+      }
       setup();
       sendGameStateMsg();
       return;
