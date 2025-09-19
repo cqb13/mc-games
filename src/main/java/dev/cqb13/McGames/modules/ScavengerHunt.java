@@ -1,14 +1,18 @@
 package dev.cqb13.McGames.modules;
 
+import java.util.List;
+
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
+import dev.cqb13.McGames.utils.GameUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
-import meteordevelopment.meteorclient.settings.BoolSetting;
 import meteordevelopment.meteorclient.settings.EnumSetting;
+import meteordevelopment.meteorclient.settings.ItemListSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.item.Item;
 
 public class ScavengerHunt extends Module {
   private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
@@ -24,28 +28,14 @@ public class ScavengerHunt extends Module {
       .onChanged(d -> optionSwitch())
       .build());
 
-  private Setting<Boolean> overworld = sgDimensions.add(new BoolSetting.Builder()
-      .name("overworld")
-      .description("Include blocks from the overworld.")
-      .defaultValue(true)
-      .onChanged(d -> optionSwitch())
-      .build());
-
-  private Setting<Boolean> nether = sgDimensions.add(new BoolSetting.Builder()
-      .name("nether")
-      .description("Include blocks from the nether.")
-      .defaultValue(true)
-      .onChanged(d -> optionSwitch())
-      .build());
-  private Setting<Boolean> end = sgDimensions.add(new BoolSetting.Builder()
-      .name("overworld")
-      .description("Include blocks from the end.")
-      .defaultValue(false)
-      .onChanged(d -> optionSwitch())
+  private final Setting<List<Item>> items = sgGeneral.add(new ItemListSetting.Builder()
+      .name("block-blacklist")
+      .description("Blocks that will not be used in the scavenger hunt.")
+      .defaultValue(GameUtils.defualtBlackList)
       .build());
 
   public ScavengerHunt() {
-    super(McGames.CATEGORY, "wordle", "Play Wordle forever.");
+    super(McGames.CATEGORY, "scavenger-hunt", "Find and collect items.");
   }
 
   @Override
@@ -53,11 +43,11 @@ public class ScavengerHunt extends Module {
   }
 
   private void optionSwitch() {
-
   }
 
   @EventHandler
   private void onGameLeft(GameLeftEvent event) {
+    System.out.println(items.get());
     toggle();
   }
 }

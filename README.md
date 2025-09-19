@@ -13,12 +13,13 @@ Play some games while your traveling, getting started in a new world, or just bo
 
 ## Features
 
-| Feature     | Description                                 |
-| ----------- | ------------------------------------------- |
-| Hangman     | Guess letters to reveal the word            |
-| Tic-Tac-Toe | Play Tic-Tac-Toe                            |
-| Wordle      | Play Wordle forever                         |
-| Navigator   | Make your way to a random location near you |
+| Feature        | Description                                 |
+| -------------- | ------------------------------------------- |
+| Hangman        | Guess letters to reveal the word            |
+| Tic-Tac-Toe    | Play Tic-Tac-Toe                            |
+| Wordle         | Play Wordle forever                         |
+| Navigator      | Make your way to a random location near you |
+| Scavenger Hunt | Find and collect items                      |
 
 ## TODO
 
