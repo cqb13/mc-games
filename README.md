@@ -24,6 +24,13 @@ Play some games while your traveling, getting started in a new world, or just bo
 
 ### World
 
+- Russian Roulette
+  - Random chance to kill you
+    - /kill
+    - baritone walks to lava
+    - if in end, dig strait down
+    - if difficulty is hard, stop from eating
+
 **Less time = More Points**
 
 - Scavenger Hunt
