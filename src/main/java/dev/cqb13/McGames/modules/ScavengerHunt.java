@@ -1,27 +1,31 @@
 package dev.cqb13.McGames.modules;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
 import dev.cqb13.McGames.utils.GameUtils;
+import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
+import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.ItemListSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 
 public class ScavengerHunt extends Module {
   private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-  private final SettingGroup sgDimensions = settings.createGroup("Dimensions");
 
   private final Setting<Difficulty> difficulty = sgGeneral.add(new EnumSetting.Builder<Difficulty>()
       .name("difficulty")
@@ -34,6 +38,7 @@ public class ScavengerHunt extends Module {
       .name("block-blacklist")
       .description("Blocks that will not be used in the scavenger hunt.")
       .defaultValue(GameUtils.defualtBlackList)
+      .onChanged(b -> optionSwitch())
       .build());
 
   public ScavengerHunt() {
@@ -50,10 +55,43 @@ public class ScavengerHunt extends Module {
     }
 
     selectItems();
+    sendRequiredItems();
   }
 
   private void optionSwitch() {
     selectItems();
+    sendRequiredItems();
+  }
+
+  private void sendRequiredItems() {
+    MutableText message = Text.empty();
+    message.append("\n\n");
+    message.append("Please collec the following items:\n");
+    for (Map.Entry<Item, Integer> items : requirements.entrySet()) {
+      message.append("\t" + items.getKey().toString() + " x" + items.getValue() + ".\n");
+    }
+    McGamesChatUtils.sendGameMsg(title, message);
+  }
+
+  @EventHandler
+  private void onTick(TickEvent.Post event) {
+    assert mc.player != null;
+
+    PlayerInventory inventory = mc.player.getInventory();
+
+    boolean hasAllItems = true;
+
+    for (Map.Entry<Item, Integer> items : requirements.entrySet()) {
+      if (inventory.count(items.getKey()) < items.getValue()) {
+        hasAllItems = false;
+        break;
+      }
+    }
+
+    if (hasAllItems) {
+      McGamesChatUtils.sendGameMsg(title, "You collected all the items!");
+      toggle();
+    }
   }
 
   // easy, 3 kinds of items, limited to max of 10 of each
@@ -61,6 +99,7 @@ public class ScavengerHunt extends Module {
   // hard, 12 kinds of items, limited to max of 128 of each
   private void selectItems() {
     Random random = new Random();
+    requirements = new HashMap<>();
 
     int items = 0;
     int itemLimit = 0;
@@ -80,32 +119,31 @@ public class ScavengerHunt extends Module {
         break;
     }
 
-    while (items != 0) {
-      Item chosen = allItems.get(random.nextInt(allItems.size()));
+    while (items > 0) {
+      if (allItems.isEmpty() || itemLimit <= 0)
+        break;
 
-      if (requirements.containsKey(chosen)) {
-        continue;
-      }
+      Item chosen = allItems.get(random.nextInt(0, allItems.size()));
 
-      if (blackListedItems.get().contains(chosen)) {
+      if (requirements.containsKey(chosen))
         continue;
-      }
+      if (blackListedItems.get().contains(chosen))
+        continue;
 
       int amount = random.nextInt(1, itemLimit + 1);
 
-      if (chosen.getMaxCount() > amount) {
+      if (amount > chosen.getMaxCount()) {
         amount = chosen.getMaxCount();
       }
 
       requirements.put(chosen, amount);
-
-      items -= 1;
+      items--;
     }
+
   }
 
   @EventHandler
   private void onGameLeft(GameLeftEvent event) {
-    System.out.println(blackListedItems.get());
     toggle();
   }
 }
