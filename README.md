@@ -13,13 +13,14 @@ Play some games while your traveling, getting started in a new world, or just bo
 
 ## Features
 
-| Feature        | Description                                 |
-| -------------- | ------------------------------------------- |
-| Hangman        | Guess letters to reveal the word            |
-| Navigator      | Make your way to a random location near you |
-| Scavenger Hunt | Find and collect items                      |
-| Tic-Tac-Toe    | Play Tic-Tac-Toe                            |
-| Wordle         | Play Wordle forever                         |
+| Feature         | Description                                        |
+| --------------- | -------------------------------------------------- |
+| Getting Started | Collect esential items and gear as fast as you can |
+| Hangman         | Guess letters to reveal the word                   |
+| Navigator       | Make your way to a random location near you        |
+| Scavenger Hunt  | Find and collect items                             |
+| Tic-Tac-Toe     | Play Tic-Tac-Toe                                   |
+| Wordle          | Play Wordle forever                                |
 
 ## TODO
 
@@ -31,10 +32,3 @@ Play some games while your traveling, getting started in a new world, or just bo
     - baritone walks to lava
     - if in end, dig strait down
     - if difficulty is hard, stop from eating
-
-- Getting Started
-  - Equip a full suit of diamond armor
-  - Have a diamond sword, pic, and axe
-  - Have a stack of smelted iron & a stack of diamonds
-  - Have a stack of any food
-  - Have 2 stacks of cobble stone
