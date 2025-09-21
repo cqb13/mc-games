@@ -3,10 +3,10 @@ package dev.cqb13.McGames.modules;
 import java.util.ArrayList;
 
 import dev.cqb13.McGames.McGames;
-import dev.cqb13.McGames.enums.TicTacToe.Player;
 import dev.cqb13.McGames.enums.Difficulty;
 import dev.cqb13.McGames.enums.GameMode;
 import dev.cqb13.McGames.enums.TicTacToe.Piece;
+import dev.cqb13.McGames.enums.TicTacToe.Player;
 import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;

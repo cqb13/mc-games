@@ -1,12 +1,12 @@
 package dev.cqb13.McGames.utils;
 
+import static meteordevelopment.meteorclient.MeteorClient.mc;
+
+import meteordevelopment.meteorclient.mixininterface.IChatHud;
+import meteordevelopment.meteorclient.utils.Utils;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import meteordevelopment.meteorclient.mixininterface.IChatHud;
-import meteordevelopment.meteorclient.utils.Utils;
-
-import static meteordevelopment.meteorclient.MeteorClient.mc;
 
 public class McGamesChatUtils {
   public static void sendGameMsg(String gameName, String message) {

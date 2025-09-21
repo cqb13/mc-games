@@ -1,6 +1,10 @@
 
 package dev.cqb13.McGames.modules;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Random;
+
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
@@ -13,10 +17,6 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Random;
 
 public class Navigator extends Module {
   private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
