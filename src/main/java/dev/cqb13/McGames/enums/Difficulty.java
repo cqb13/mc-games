@@ -1,8 +1,8 @@
 package dev.cqb13.McGames.enums;
 
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.text.MutableText;
 
 public enum Difficulty {
   Easy,

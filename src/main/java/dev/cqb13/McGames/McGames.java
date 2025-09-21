@@ -1,12 +1,18 @@
 package dev.cqb13.McGames;
 
-import dev.cqb13.McGames.modules.*;
+import org.slf4j.Logger;
+
 import com.mojang.logging.LogUtils;
+
+import dev.cqb13.McGames.modules.Hangman;
+import dev.cqb13.McGames.modules.Navigator;
+import dev.cqb13.McGames.modules.ScavengerHunt;
+import dev.cqb13.McGames.modules.TicTacToe;
+import dev.cqb13.McGames.modules.Wordle;
 import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import org.slf4j.Logger;
 
 public class McGames extends MeteorAddon {
   public static final Logger LOG = LogUtils.getLogger();

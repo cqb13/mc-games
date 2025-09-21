@@ -1,5 +1,6 @@
 package dev.cqb13.McGames.modules;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ScavengerHunt extends Module {
 
   private HashMap<Item, Integer> requirements;
   private List<Item> allItems = new ArrayList<>();
+  private LocalTime start;
 
   @Override
   public void onActivate() {
@@ -56,19 +58,25 @@ public class ScavengerHunt extends Module {
 
     selectItems();
     sendRequiredItems();
+    start = LocalTime.now();
   }
 
   private void optionSwitch() {
+    if (!isActive()) {
+      return;
+    }
     selectItems();
     sendRequiredItems();
+    start = LocalTime.now();
   }
 
   private void sendRequiredItems() {
     MutableText message = Text.empty();
     message.append("\n\n");
-    message.append("Please collec the following items:\n");
+    message.append("Please collect the following items:\n");
     for (Map.Entry<Item, Integer> items : requirements.entrySet()) {
-      message.append("\t" + items.getKey().toString() + " x" + items.getValue() + ".\n");
+      message.append("  - " + items.getKey().toString().trim().replace("minecraft:", "").replace("_", " ") + " x"
+          + items.getValue() + "\n");
     }
     McGamesChatUtils.sendGameMsg(title, message);
   }
@@ -89,7 +97,12 @@ public class ScavengerHunt extends Module {
     }
 
     if (hasAllItems) {
-      McGamesChatUtils.sendGameMsg(title, "You collected all the items!");
+      String time = GameUtils.calculateDuration(start);
+      MutableText message = Text.empty();
+      message.append("\n\n");
+      message.append("You collected all the items!");
+      message.append("It took you: " + time + "\n");
+      McGamesChatUtils.sendGameMsg(title, message);
       toggle();
     }
   }

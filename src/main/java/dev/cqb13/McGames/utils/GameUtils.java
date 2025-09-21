@@ -4,6 +4,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +39,7 @@ public class GameUtils {
       Items.CREAKING_SPAWN_EGG, Items.ZOMBIE_SPAWN_EGG, Items.ZOMBIE_HORSE_SPAWN_EGG,
       Items.ZOMBIE_VILLAGER_SPAWN_EGG, Items.ZOMBIFIED_PIGLIN_SPAWN_EGG, Items.FILLED_MAP, Items.STRUCTURE_BLOCK,
       Items.JIGSAW, Items.TEST_BLOCK, Items.TEST_INSTANCE_BLOCK, Items.BARRIER, Items.LIGHT, Items.COMMAND_BLOCK,
-      Items.SPAWNER, Items.BEDROCK);
+      Items.SPAWNER, Items.BEDROCK, Items.PETRIFIED_OAK_SLAB);
 
   public static String[] fetchWordList(String url) throws McGamesException {
     HttpClient client = HttpClient.newHttpClient();
@@ -75,5 +77,20 @@ public class GameUtils {
 
   public static boolean mcGamesMessage(ReceiveMessageEvent event, String title) {
     return event.getMessage().getString().startsWith(String.format("[MC Games] [%s]", title));
+  }
+
+  public static String calculateDuration(LocalTime start) {
+    LocalTime end = LocalTime.now();
+
+    Duration duration = Duration.between(start, end);
+    long seconds = duration.getSeconds();
+
+    long hours = seconds / 3600;
+    long minutes = (seconds % 3600) / 60;
+    long secs = seconds % 60;
+
+    String time = String.format("%d hours, %d minutes, %d seconds", hours, minutes, secs);
+
+    return time;
   }
 }
