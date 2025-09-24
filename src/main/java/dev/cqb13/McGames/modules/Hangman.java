@@ -75,7 +75,7 @@ public class Hangman extends Module {
   }
 
   public void optionSwitch() {
-    if (wordList == null) {
+    if (wordList == null || !isActive()) {
       return;
     }
     setup(true);
