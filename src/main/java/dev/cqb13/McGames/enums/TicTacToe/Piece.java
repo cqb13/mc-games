@@ -1,17 +1,17 @@
 package dev.cqb13.McGames.enums.TicTacToe;
 
 public enum Piece {
-  X("X"),
-  O("0"),
-  Empty(" ");
+    X("X"),
+    O("0"),
+    Empty(" ");
 
-  private final String value;
+    private final String value;
 
-  private Piece(String value) {
-    this.value = value;
-  }
+    private Piece(String value) {
+        this.value = value;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 }

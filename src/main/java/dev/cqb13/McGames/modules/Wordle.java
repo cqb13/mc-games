@@ -19,205 +19,205 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 public class Wordle extends Module {
-  record WordleBox(char letter, WordleBoxState state) {
-  }
-
-  private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
-
-  private final Setting<Boolean> hideChatMessages = sgGeneral.add(new BoolSetting.Builder()
-      .name("hide-chat-messages")
-      .description("Hide chat messages from players while the game is running.")
-      .defaultValue(true)
-      .build());
-
-  private final Setting<GameMode> mode = sgGeneral.add(new EnumSetting.Builder<GameMode>()
-      .name("mode")
-      .description("Single Round: one game, Survival: play until you die, Infinite: play forever.")
-      .defaultValue(GameMode.SingleRound)
-      .onChanged(m -> optionSwitch())
-      .build());
-
-  public Wordle() {
-    super(McGames.CATEGORY, "wordle", "Play Wordle forever.");
-  }
-
-  private static final String WORD_LIST_URL = "https://raw.githubusercontent.com/cqb13/mc-games/refs/heads/data/wordle-words.txt";
-  private String[] wordList;
-  private WordleBox[][] gameState = new WordleBox[6][5];
-  private String hiddenWord;
-  private int currentRow;
-  private int roundsPlayed;
-
-  @Override
-  public void onActivate() {
-    try {
-      wordList = GameUtils.fetchWordList(WORD_LIST_URL);
-    } catch (Exception e) {
-      error(e.getMessage());
-      toggle();
-      return;
+    record WordleBox(char letter, WordleBoxState state) {
     }
 
-    setup();
-    McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Wordle is active.");
-    sendGameStateMsg();
-  }
+    private final SettingGroup sgGeneral = this.settings.getDefaultGroup();
 
-  private void optionSwitch() {
-    roundsPlayed = 0;
-  }
+    private final Setting<Boolean> hideChatMessages = sgGeneral.add(new BoolSetting.Builder()
+            .name("hide-chat-messages")
+            .description("Hide chat messages from players while the game is running.")
+            .defaultValue(true)
+            .build());
 
-  private void setup() {
-    hiddenWord = GameUtils.pickWordFromList(wordList, 5, 5);
+    private final Setting<GameMode> mode = sgGeneral.add(new EnumSetting.Builder<GameMode>()
+            .name("mode")
+            .description("Single Round: one game, Survival: play until you die, Infinite: play forever.")
+            .defaultValue(GameMode.SingleRound)
+            .onChanged(m -> optionSwitch())
+            .build());
 
-    currentRow = 0;
-    for (int y = 0; y < gameState.length; y++) {
-      for (int x = 0; x < gameState[y].length; x++) {
-        gameState[y][x] = new WordleBox(' ', WordleBoxState.Empty);
-      }
-    }
-  }
-
-  @EventHandler
-  private void onSendMessage(SendMessageEvent event) {
-    mc.inGameHud.getChatHud().clear(false);
-    event.cancel();
-    if (event.message.length() != 5) {
-      McGamesChatUtils.sendGameMsg(title, "Please enter a 5 letter word.");
-      sendGameStateMsg();
-      return;
+    public Wordle() {
+        super(McGames.CATEGORY, "wordle", "Play Wordle forever.");
     }
 
-    boolean found = false;
-    for (String word : wordList) {
-      if (word.equals(event.message.toLowerCase())) {
-        found = true;
-        break;
-      }
-    }
+    private static final String WORD_LIST_URL = "https://raw.githubusercontent.com/cqb13/mc-games/refs/heads/data/wordle-words.txt";
+    private String[] wordList;
+    private WordleBox[][] gameState = new WordleBox[6][5];
+    private String hiddenWord;
+    private int currentRow;
+    private int roundsPlayed;
 
-    if (!found) {
-      McGamesChatUtils.sendGameMsg(title, "Word not in word list.");
-      sendGameStateMsg();
-      return;
-    }
-
-    updateGameState(event.message.toLowerCase());
-
-    if (hiddenWord.equals(event.message.toLowerCase())) {
-      sendGameStateMsg();
-      McGamesChatUtils.sendGameMsg(title, "You got it!");
-      if (mode.get() == GameMode.SingleRound) {
-        toggle();
-        return;
-      }
-      roundsPlayed += 1;
-      setup();
-      sendGameStateMsg();
-      return;
-    }
-
-    sendGameStateMsg();
-
-    currentRow += 1;
-    if (currentRow > 5) {
-      McGamesChatUtils.sendGameMsg(title, "Not quite, the word was " + hiddenWord + ".");
-      if (mode.get() == GameMode.SingleRound || mode.get() == GameMode.Survival) {
-        if (mode.get() == GameMode.Survival) {
-          McGamesChatUtils.sendGameMsg(title, "You survived for " + roundsPlayed + " rounds.");
+    @Override
+    public void onActivate() {
+        try {
+            wordList = GameUtils.fetchWordList(WORD_LIST_URL);
+        } catch (Exception e) {
+            error(e.getMessage());
+            toggle();
+            return;
         }
-        toggle();
-        return;
-      }
-      setup();
-      sendGameStateMsg();
-      return;
-    }
-  }
 
-  private void updateGameState(String guess) {
-    String[] guessLetters = guess.split("");
-    String[] hiddenWordLettersCopy = hiddenWord.split("");
-
-    for (int i = 0; i < 5; i++) {
-      if (guessLetters[i].equals(hiddenWordLettersCopy[i])) {
-        gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Correct);
-        guessLetters[i] = "-";
-        hiddenWordLettersCopy[i] = "*";
-      }
+        setup();
+        McGamesChatUtils.sendGameMsg(title, "Your chat messages will not send while Wordle is active.");
+        sendGameStateMsg();
     }
 
-    for (int i = 0; i < 5; i++) {
-      if (gameState[currentRow][i].state() == WordleBoxState.Correct) {
-        continue;
-      }
+    private void optionSwitch() {
+        roundsPlayed = 0;
+    }
 
-      String letter = guessLetters[i];
-      boolean found = false;
+    private void setup() {
+        hiddenWord = GameUtils.pickWordFromList(wordList, 5, 5);
 
-      for (int j = 0; j < 5; j++) {
-        if (letter.equals(hiddenWordLettersCopy[j])) {
-          found = true;
-          hiddenWordLettersCopy[j] = "*";
-          break;
+        currentRow = 0;
+        for (int y = 0; y < gameState.length; y++) {
+            for (int x = 0; x < gameState[y].length; x++) {
+                gameState[y][x] = new WordleBox(' ', WordleBoxState.Empty);
+            }
         }
-      }
-
-      if (found) {
-        gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Included);
-      } else {
-        gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Incorrect);
-      }
     }
-  }
 
-  private void sendGameStateMsg() {
-    MutableText message = Text.empty();
-    message.append("\n\n");
-    for (WordleBox[] row : gameState) {
-      MutableText rowText = Text.empty();
-      rowText.append("|");
-      for (WordleBox box : row) {
-        Text styledLetter = styleLetter(box);
-        rowText.append(styledLetter);
-      }
-      rowText.append("|\n");
-      message.append(rowText);
+    @EventHandler
+    private void onSendMessage(SendMessageEvent event) {
+        mc.inGameHud.getChatHud().clear(false);
+        event.cancel();
+        if (event.message.length() != 5) {
+            McGamesChatUtils.sendGameMsg(title, "Please enter a 5 letter word.");
+            sendGameStateMsg();
+            return;
+        }
+
+        boolean found = false;
+        for (String word : wordList) {
+            if (word.equals(event.message.toLowerCase())) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            McGamesChatUtils.sendGameMsg(title, "Word not in word list.");
+            sendGameStateMsg();
+            return;
+        }
+
+        updateGameState(event.message.toLowerCase());
+
+        if (hiddenWord.equals(event.message.toLowerCase())) {
+            sendGameStateMsg();
+            McGamesChatUtils.sendGameMsg(title, "You got it!");
+            if (mode.get() == GameMode.SingleRound) {
+                toggle();
+                return;
+            }
+            roundsPlayed += 1;
+            setup();
+            sendGameStateMsg();
+            return;
+        }
+
+        sendGameStateMsg();
+
+        currentRow += 1;
+        if (currentRow > 5) {
+            McGamesChatUtils.sendGameMsg(title, "Not quite, the word was " + hiddenWord + ".");
+            if (mode.get() == GameMode.SingleRound || mode.get() == GameMode.Survival) {
+                if (mode.get() == GameMode.Survival) {
+                    McGamesChatUtils.sendGameMsg(title, "You survived for " + roundsPlayed + " rounds.");
+                }
+                toggle();
+                return;
+            }
+            setup();
+            sendGameStateMsg();
+            return;
+        }
     }
-    McGamesChatUtils.sendGameMsg(title, message);
-  }
 
-  private Text styleLetter(WordleBox box) {
-    MutableText letter = Text.empty();
-    switch (box.state()) {
-      case WordleBoxState.Correct:
-        letter.setStyle(letter.getStyle().withFormatting(Formatting.GREEN));
-        break;
-      case WordleBoxState.Included:
-        letter.setStyle(letter.getStyle().withFormatting(Formatting.YELLOW));
-        break;
-      case WordleBoxState.Incorrect:
-        letter.setStyle(letter.getStyle().withFormatting(Formatting.GRAY));
-        break;
-      case WordleBoxState.Empty:
-        letter.setStyle(letter.getStyle().withFormatting(Formatting.WHITE));
-        break;
+    private void updateGameState(String guess) {
+        String[] guessLetters = guess.split("");
+        String[] hiddenWordLettersCopy = hiddenWord.split("");
+
+        for (int i = 0; i < 5; i++) {
+            if (guessLetters[i].equals(hiddenWordLettersCopy[i])) {
+                gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Correct);
+                guessLetters[i] = "-";
+                hiddenWordLettersCopy[i] = "*";
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            if (gameState[currentRow][i].state() == WordleBoxState.Correct) {
+                continue;
+            }
+
+            String letter = guessLetters[i];
+            boolean found = false;
+
+            for (int j = 0; j < 5; j++) {
+                if (letter.equals(hiddenWordLettersCopy[j])) {
+                    found = true;
+                    hiddenWordLettersCopy[j] = "*";
+                    break;
+                }
+            }
+
+            if (found) {
+                gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Included);
+            } else {
+                gameState[currentRow][i] = new WordleBox(guess.charAt(i), WordleBoxState.Incorrect);
+            }
+        }
     }
-    letter.append(" " + box.letter() + " ");
 
-    return letter;
-  }
-
-  @EventHandler
-  private void onMessageReceive(ReceiveMessageEvent event) {
-    if (!hideChatMessages.get() || GameUtils.mcGamesMessage(event, title)) {
-      return;
+    private void sendGameStateMsg() {
+        MutableText message = Text.empty();
+        message.append("\n\n");
+        for (WordleBox[] row : gameState) {
+            MutableText rowText = Text.empty();
+            rowText.append("|");
+            for (WordleBox box : row) {
+                Text styledLetter = styleLetter(box);
+                rowText.append(styledLetter);
+            }
+            rowText.append("|\n");
+            message.append(rowText);
+        }
+        McGamesChatUtils.sendGameMsg(title, message);
     }
-    event.cancel();
-  }
 
-  @EventHandler
-  private void onGameLeft(GameLeftEvent event) {
-    toggle();
-  }
+    private Text styleLetter(WordleBox box) {
+        MutableText letter = Text.empty();
+        switch (box.state()) {
+            case WordleBoxState.Correct:
+                letter.setStyle(letter.getStyle().withFormatting(Formatting.GREEN));
+                break;
+            case WordleBoxState.Included:
+                letter.setStyle(letter.getStyle().withFormatting(Formatting.YELLOW));
+                break;
+            case WordleBoxState.Incorrect:
+                letter.setStyle(letter.getStyle().withFormatting(Formatting.GRAY));
+                break;
+            case WordleBoxState.Empty:
+                letter.setStyle(letter.getStyle().withFormatting(Formatting.WHITE));
+                break;
+        }
+        letter.append(" " + box.letter() + " ");
+
+        return letter;
+    }
+
+    @EventHandler
+    private void onMessageReceive(ReceiveMessageEvent event) {
+        if (!hideChatMessages.get() || GameUtils.mcGamesMessage(event, title)) {
+            return;
+        }
+        event.cancel();
+    }
+
+    @EventHandler
+    private void onGameLeft(GameLeftEvent event) {
+        toggle();
+    }
 }
