@@ -9,6 +9,11 @@ import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.widgets.WWidget;
+import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
+import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.IntSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -70,10 +75,24 @@ public class Navigator extends Module {
 
         destination = new BlockPos(new Vec3i((int) nx, (int) ny, (int) nz));
 
-        McGamesChatUtils.sendGameMsg(title,
-                String.format("Your destination is (%d, %d, %d), you must reach it as fast as possible.",
-                        destination.getX(), destination.getY(), destination.getZ()));
+        sendGoalMessage();
         startTime = LocalDateTime.now();
+    }
+
+    @Override
+    public WWidget getWidget(GuiTheme theme) {
+        WVerticalList list = theme.verticalList();
+
+        WHorizontalList l1 = list.add(theme.horizontalList()).expandX().widget();
+
+        WButton start = l1.add(theme.button("Remind Me")).expandX().widget();
+        start.action = () -> {
+            if (this.isActive()) {
+                sendGoalMessage();
+            }
+        };
+
+        return list;
     }
 
     @EventHandler
@@ -104,6 +123,13 @@ public class Navigator extends Module {
     @EventHandler
     private void onGameLeft(GameLeftEvent event) {
         toggle();
+    }
+
+    public void sendGoalMessage() {
+        McGamesChatUtils.sendGameMsg(title,
+                String.format("Your destination is (%d, %d, %d), you must reach it as fast as possible.",
+                        destination.getX(), destination.getY(), destination.getZ()));
+
     }
 
     private static double distanceTo(double x1, double y1, double z1, double x2, double y2, double z2) {

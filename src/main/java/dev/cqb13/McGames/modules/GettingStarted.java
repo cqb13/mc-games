@@ -10,6 +10,11 @@ import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
+import meteordevelopment.meteorclient.gui.GuiTheme;
+import meteordevelopment.meteorclient.gui.widgets.WWidget;
+import meteordevelopment.meteorclient.gui.widgets.containers.WHorizontalList;
+import meteordevelopment.meteorclient.gui.widgets.containers.WVerticalList;
+import meteordevelopment.meteorclient.gui.widgets.pressable.WButton;
 import meteordevelopment.meteorclient.settings.EnumSetting;
 import meteordevelopment.meteorclient.settings.Setting;
 import meteordevelopment.meteorclient.settings.SettingGroup;
@@ -59,6 +64,22 @@ public class GettingStarted extends Module {
         }
         sendRequiredItems();
         start = LocalTime.now();
+    }
+
+    @Override
+    public WWidget getWidget(GuiTheme theme) {
+        WVerticalList list = theme.verticalList();
+
+        WHorizontalList l1 = list.add(theme.horizontalList()).expandX().widget();
+
+        WButton start = l1.add(theme.button("Remind Me")).expandX().widget();
+        start.action = () -> {
+            if (this.isActive()) {
+                sendRequiredItems();
+            }
+        };
+
+        return list;
     }
 
     /*
