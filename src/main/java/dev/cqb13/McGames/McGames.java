@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import dev.cqb13.McGames.modules.GettingStarted;
 import dev.cqb13.McGames.modules.Hangman;
 import dev.cqb13.McGames.modules.Navigator;
+import dev.cqb13.McGames.modules.RussianRoulette;
 import dev.cqb13.McGames.modules.ScavengerHunt;
 import dev.cqb13.McGames.modules.TicTacToe;
 import dev.cqb13.McGames.modules.Wordle;
@@ -29,6 +30,7 @@ public class McGames extends MeteorAddon {
         modules.add(new GettingStarted());
         modules.add(new Hangman());
         modules.add(new Navigator());
+        modules.add(new RussianRoulette());
         modules.add(new ScavengerHunt());
         modules.add(new Wordle());
         modules.add(new TicTacToe());
