@@ -71,7 +71,7 @@ public class GettingStarted extends Module {
      * Full set diamond, sword, pic, axe
      * Stack of either steak,egap,gap,gcarret
      * 2 stacks of stone
-     * a stack of iron
+     * a stack of iron ingots
      *
      * Hard Mode:
      * Full set netherite, sword, pic, axe, hoe, shovel
@@ -106,21 +106,58 @@ public class GettingStarted extends Module {
             return false;
         }
 
-        if (!hasEnoughBlocks(inventory, Items.COBBLESTONE, 64)) {
+        if (!hasEnoughItems(inventory, Items.COBBLESTONE, 64)) {
             return false;
         }
 
-        boolean hasEnoughFood = hasEnoughFood(inventory, validEasyModeFood);
-
-        if (!hasEnoughFood) {
+        if (!hasEnoughItems(inventory, Items.IRON_SWORD, 1)) {
             return false;
         }
 
-        if (inventory.count(Items.IRON_SWORD) == 0) {
+        if (!hasEnoughItems(inventory, Items.IRON_PICKAXE, 1)) {
             return false;
         }
 
-        if (inventory.count(Items.IRON_PICKAXE) == 0) {
+        if (!hasEnoughFood(inventory, validEasyModeFood)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /*
+     * Full set diamond, sword, pic, axe
+     * Stack of either steak,egap,gap,gcarret
+     * 2 stacks of stone
+     * a stack of iron ingots
+     */
+    private boolean normalModeChecks(PlayerInventory inventory) {
+        if (!wearingArmorType(Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS,
+                Items.DIAMOND_BOOTS)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.STONE, 128)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.IRON_INGOT, 64)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.DIAMOND_SWORD, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.DIAMOND_PICKAXE, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.DIAMOND_AXE, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughFood(inventory, validNormalModeFood)) {
             return false;
         }
 
@@ -150,7 +187,7 @@ public class GettingStarted extends Module {
         return hasEnoughFood;
     }
 
-    private boolean hasEnoughBlocks(PlayerInventory inventory, Item block, int minCount) {
+    private boolean hasEnoughItems(PlayerInventory inventory, Item block, int minCount) {
         int amount = inventory.count(block);
 
         return amount >= minCount;
