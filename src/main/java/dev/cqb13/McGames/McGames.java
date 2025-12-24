@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
+import dev.cqb13.McGames.modules.GettingStarted;
 import dev.cqb13.McGames.modules.Hangman;
 import dev.cqb13.McGames.modules.Navigator;
 import dev.cqb13.McGames.modules.ScavengerHunt;
@@ -25,6 +26,7 @@ public class McGames extends MeteorAddon {
         // Modules
         LOG.info("Adding modules...");
         Modules modules = Modules.get();
+        modules.add(new GettingStarted());
         modules.add(new Hangman());
         modules.add(new Navigator());
         modules.add(new ScavengerHunt());

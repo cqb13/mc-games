@@ -96,15 +96,21 @@ public class ScavengerHunt extends Module {
             }
         }
 
-        if (hasAllItems) {
-            String time = GameUtils.calculateDuration(start);
-            MutableText message = Text.empty();
-            message.append("\n\n");
-            message.append("You collected all the items!");
-            message.append("It took you: " + time + "\n");
-            McGamesChatUtils.sendGameMsg(title, message);
-            toggle();
+        if (!hasAllItems) {
+            return;
         }
+
+        sendWinMessage();
+        toggle();
+    }
+
+    private void sendWinMessage() {
+        String time = GameUtils.calculateDuration(start);
+        MutableText message = Text.empty();
+        message.append("\n\n");
+        message.append("You collected all the items!\n");
+        message.append("It took you: " + time + "\n");
+        McGamesChatUtils.sendGameMsg(title, message);
     }
 
     // easy, 3 kinds of items, limited to max of 10 of each

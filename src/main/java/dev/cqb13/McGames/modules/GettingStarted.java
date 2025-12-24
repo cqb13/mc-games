@@ -6,6 +6,7 @@ import java.util.List;
 
 import dev.cqb13.McGames.McGames;
 import dev.cqb13.McGames.enums.Difficulty;
+import dev.cqb13.McGames.utils.GameUtils;
 import dev.cqb13.McGames.utils.McGamesChatUtils;
 import meteordevelopment.meteorclient.events.game.GameLeftEvent;
 import meteordevelopment.meteorclient.events.world.TickEvent;
@@ -36,7 +37,7 @@ public class GettingStarted extends Module {
             Items.COOKED_MUTTON, Items.COOKED_RABBIT, Items.COOKED_SALMON, Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP);
 
     private static final List<Item> validNormalModeFood = Arrays.asList(Items.COOKED_BEEF, Items.GOLDEN_CARROT,
-            Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE);
+            Items.GOLDEN_APPLE);
 
     private static final List<Item> validHardModeFood = Arrays.asList(Items.GOLDEN_APPLE, Items.ENCHANTED_GOLDEN_APPLE);
 
@@ -48,7 +49,6 @@ public class GettingStarted extends Module {
 
     @Override
     public void onActivate() {
-
         sendRequiredItems();
         start = LocalTime.now();
     }
@@ -83,6 +83,28 @@ public class GettingStarted extends Module {
         MutableText message = Text.empty();
         message.append("\n\n");
         message.append("Please collect the following items:\n");
+        switch (difficulty.get()) {
+            case Easy:
+                message.append("  - A full set of iron armor\n");
+                message.append("  - An iron sword and pickaxe\n");
+                message.append("  - A stack of any cooked meat\n");
+                message.append("  - A stack of cobblestone\n");
+                break;
+            case Normal:
+                message.append("  - A full set of diamond armor\n");
+                message.append("  - A diamond sword, pickaxe, and axe\n");
+                message.append("  - A stack of either steak, golden carrots, or golden apples\n");
+                message.append("  - 2 stacks of stone\n");
+                message.append("  - A stack of iron ingots\n");
+                break;
+            case Hard:
+                message.append("  - A full set of netherite armor\n");
+                message.append("  - A netherite sword, pickaxe, axe, shovel, and hoe\n");
+                message.append("  - A stack of either golden apples, or enchanted golden apples\n");
+                message.append("  - 2 stacks of quartz blocks\n");
+                message.append("  - A stack of diamonds\n");
+                break;
+        }
         McGamesChatUtils.sendGameMsg(title, message);
     }
 
@@ -94,6 +116,33 @@ public class GettingStarted extends Module {
 
         boolean won = false;
 
+        switch (difficulty.get()) {
+            case Easy:
+                won = easyModeChecks(inventory);
+                break;
+            case Normal:
+                won = normalModeChecks(inventory);
+                break;
+            case Hard:
+                won = hardModeChecks(inventory);
+                break;
+        }
+
+        if (!won) {
+            return;
+        }
+
+        sendWinMessage();
+        toggle();
+    }
+
+    private void sendWinMessage() {
+        String time = GameUtils.calculateDuration(start);
+        MutableText message = Text.empty();
+        message.append("\n\n");
+        message.append("You collected all the items!\n");
+        message.append("It took you: " + time + "\n");
+        McGamesChatUtils.sendGameMsg(title, message);
     }
 
     /*
@@ -224,7 +273,7 @@ public class GettingStarted extends Module {
     private boolean hasEnoughFood(PlayerInventory inventory, List<Item> foodList) {
         boolean hasEnoughFood = false;
 
-        for (Item food : validEasyModeFood) {
+        for (Item food : foodList) {
             if (inventory.count(food) >= 64) {
                 hasEnoughFood = true;
                 break;
