@@ -164,6 +164,53 @@ public class GettingStarted extends Module {
         return true;
     }
 
+    /*
+     * Full set netherite, sword, pic, axe, hoe, shovel
+     * Stack of either egap,gap
+     * 2 stacks of quartz blocks
+     * a stack of diamonds
+     */
+    private boolean hardModeChecks(PlayerInventory inventory) {
+        if (!wearingArmorType(Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS,
+                Items.NETHERITE_BOOTS)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.QUARTZ_BLOCK, 128)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.DIAMOND, 64)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.NETHERITE_SWORD, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.NETHERITE_PICKAXE, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.NETHERITE_AXE, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.NETHERITE_HOE, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughItems(inventory, Items.NETHERITE_SHOVEL, 1)) {
+            return false;
+        }
+
+        if (!hasEnoughFood(inventory, validHardModeFood)) {
+            return false;
+        }
+
+        return true;
+    }
+
     private boolean wearingArmorType(Item head, Item chest, Item legs, Item feet) {
         ItemStack headArmor = mc.player.getEquippedStack(EquipmentSlot.HEAD);
         ItemStack chestArmor = mc.player.getEquippedStack(EquipmentSlot.CHEST);
