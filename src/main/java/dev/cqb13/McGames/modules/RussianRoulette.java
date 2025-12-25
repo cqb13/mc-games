@@ -41,4 +41,13 @@ public class RussianRoulette extends Module {
         }
         toggle();
     }
+
+    private enum Punishment {
+        InsultSelf,
+        Kill,
+        LeakCoordinates,
+        DigStraightDownInEnd,
+        WalkIntoLava,
+        TowerUpAndFall,
+    }
 }
