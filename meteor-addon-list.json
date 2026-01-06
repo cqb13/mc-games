@@ -1,3 +1,6 @@
 {
-  "tags": ["Fun"]
+  "tags": ["Fun"],
+  "feature_directories": {
+    "modules": ["modules"]
+  }
 }
