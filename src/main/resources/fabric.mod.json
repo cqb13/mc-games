@@ -3,7 +3,7 @@
   "id": "mc-games",
   "version": "${version}",
   "name": "MC Games",
-  "description": "Play some games while your traveling, getting started in a new world, or just bored.",
+  "description": "Play some games while you are traveling, getting started in a new world, or just bored.",
   "authors": ["cqb13"],
   "contact": {
     "sources": "https://github.com/cqb13/mc-games"
