@@ -2,6 +2,9 @@
 
 Play some games while you are traveling, getting started in a new world, or just bored.
 
+<p>Join for support<p>
+<a href="https://discord.gg/TtmQs7BzPJ"><img src="https://invidget.switchblade.xyz/TtmQs7BzPJ"></a>
+
 [Find more cool addons here](https://www.meteoraddons.com/)
 
 ## How to Use
