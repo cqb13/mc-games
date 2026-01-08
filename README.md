@@ -1,6 +1,6 @@
 # MC Games
 
-Play some games while your traveling, getting started in a new world, or just bored.
+Play some games while you are traveling, getting started in a new world, or just bored.
 
 [Find more cool addons here](https://www.meteoraddons.com/)
 
